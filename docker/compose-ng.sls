@@ -1,4 +1,8 @@
 {%- from "docker/map.jinja" import compose with context %}
+
+include:
+  - docker.compose
+
 {%- for name, container in compose.items() %}
   {%- set id = container.container_name|d(name) %}
   {%- set required_containers = [] %}
@@ -25,7 +29,7 @@
   {%- endif %}
   {%- if 'environment' in container and container.environment is iterable %}
     - environment:
-    {%- for variable, value in container.environment.iteritems() %}
+    {%- for variable, value in container.environment.items() %}
         - {{variable}}: {{value}}
     {%- endfor %}
   {%- endif %}
