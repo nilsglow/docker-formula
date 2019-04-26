@@ -22,7 +22,7 @@ Install and run Docker daemon
 
 .. note::
 
-    On Ubuntu 12.04 state will also update kernel if needeed
+    On Ubuntu 12.04 state will also update kernel if needed
     (as mentioned in `docker installation docs <https://docs.docker.com/installation/ubuntulinux/>`_).
     You should manually reboot minions for kernel update to take affect.
     
@@ -86,7 +86,7 @@ with one another. Use `docker.compose-ng` to run `docker-compose`.
 ``docker.compose-ng``
 ---------------------
 
-The intent is to provide an interface similar to the `specification <https://docs.docker.com/compose/yml/>`_
+The intent is to provide an interface similar to the `specification <https://docs.docker.com/compose/compose-file/>`_
 provided by docker-compose. The hope is that you may provide pillar data
 similar to that which you would use to define services with docker-compose. The
 assumption is that you are already using pillar data and salt formulae to
@@ -194,7 +194,7 @@ Stop Docker daemon. Remove older docker packages (usually called 'docker' and 'd
 Development
 ===========
 
-Note that some of the internal states such as `docker.running` are references to the internal `dockerio states <https://docs.saltstack.com/en/latest/ref/states/all/salt.states.dockerio.html>`
+Note that some of the internal states such as `docker.running` are references to the internal `dockerio states <https://docs.saltstack.com/en/latest/ref/states/all/salt.states.dockerio.html>`_
 
 
 Testing
