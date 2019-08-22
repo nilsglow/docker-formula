@@ -47,7 +47,7 @@ include:
     {%- endfor %}
   {%- endif %}
   {%- if 'ports' in container and container.ports is iterable %}
-    - ports:
+    - port_bindings:
     {%- for port_mapping in container.ports %}
       {%- if port_mapping is string %}
         {%- set mapping = port_mapping.split(':',2) %}
