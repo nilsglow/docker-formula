@@ -1,7 +1,21 @@
-.. _readme:
+docker-formula
+==============
 
-Docker
-======
+Extensible formula to manage Docker on MacOS, Windows, and GNU/Linux. Currently supports:
+
+* `software`   Docker (https://docs.docker.com/engine/install)  [all OS]
+* `containers` Manage Containers. [all OS]
+* `compose`    Compose Containers. [all OS]
+* `swarm`      Docker Swarm. [Linux]
+
+The default `docker.software` and `docker.compose.software` states support:
+
+* `archive` Docker-Engine (https://docs.docker.com/engine/install)  [Linux]
+* `desktop` Docker-Desktop (https://docs.docker.com/desktop) [Windows, MacOS]
+*           Docker-Compose (https://docs.docker.com/compose/install/)  [Linux]
+
+The other states support container managmement.
+
 
 |img_travis| |img_sr|
 
@@ -14,23 +28,17 @@ Docker
    :scale: 100%
    :target: https://github.com/semantic-release/semantic-release
 
-Formulas for working with Docker
+A SaltStack formula for Docker on MacOS, GNU/Linux,  Windows and Raspberry Pi (4b).
 
 .. contents:: **Table of Contents**
+   :depth: 1
 
 General notes
 -------------
 
 See the full `SaltStack Formulas installation and usage instructions
-<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
-
-If you are interested in writing or contributing to formulas, please pay attention to the `Writing Formula Section
-<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#writing-formulas>`_.
-
-If you want to use this formula, please pay attention to the ``FORMULA`` file and/or ``git tag``,
-which contains the currently released version. This formula is versioned according to `Semantic Versioning <http://semver.org/>`_.
-
-See `Formula Versioning Section <https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#versioning>`_ for more details.
+<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.  If you are interested in writing or contributing to formulas, please pay attention to the `Writing Formula Section
+<https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#writing-formulas>`_. If you want to use this formula, please pay attention to the ``FORMULA`` file and/or ``git tag``, which contains the currently released version. This formula is versioned according to `Semantic Versioning <http://semver.org/>`_.  See `Formula Versioning Section <https://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html#versioning>`_ for more details.
 
 Contributing to this repo
 -------------------------
@@ -39,95 +47,101 @@ Contributing to this repo
 
 Please see `How to contribute <https://github.com/saltstack-formulas/.github/blob/master/CONTRIBUTING.rst>`_ for more details.
 
-Available states
-----------------
+Available Meta states
+---------------------
 
 .. contents::
-    :local:
+   :local:
 
 ``docker``
 ^^^^^^^^^^
 
-Install and run Docker daemon
+*Meta-state (This is a state that includes other states)*.
 
-.. note::
-
-    On Ubuntu 12.04 state will also update kernel if needed
-    (as mentioned in `docker installation docs <https://docs.docker.com/installation/ubuntulinux/>`_).
-    You should manually reboot minions for kernel update to take affect.
-    
-    You can override the default docker daemon options by setting each line in the *"docker-pkg:lookup:config"* pillar. This effectively writes the config in */etc/default/docker*. See *pillar.example*
-
-
-``docker.containers``
-^^^^^^^^^^^^^^^^^^^^^
-
-Pulls and runs a number of docker containers with arbitrary *run* options all configurable via pillars.
-Salt includes *dockerio* and *dockerng* states, but both depend on *docker-py* library, which not always implements the latest *docker run* options. This gives the user more control over the docker run options, but it doesn't try to implement all the other docker commands, such as build, ps, inspect, etc. It just pulls an image and runs it.
-
-To use it, just include *docker.containers* in your *top.sls*, and configure it using pillars:
-
-::
-
-  docker-containers:
-    lookup:
-      mycontainer:
-        image: "my_image"
-        cmd:
-        runoptions:
-          - "-e MY_ENV=warn"
-          - "--log-driver=syslog"
-          - "-p 2345:2345"
-          - "--rm"
-      myapp:
-        image: "myregistry.com:5000/training/app:3.0"
-	args:
-          - "https://someargument_as_an_url"
-          - "--port 5500"
-        cmd:  python app.py
-        runoptions:
-          - "--log-driver=syslog"
-          - "-v /mnt/myapp:/myapp"
-          - "-p 80:80"
-          - "--rm"
-        stopoptions:
-          - -t 60
-
-
-In the example pillar above:
-
-- *mycontainer* and *myapp* are the container names (ie *--name* option).
-- Upstart files are created for each container, so ``service <container_name> stop|start|status`` should just work
-- ``service <container_name> stop`` will wipeout the container completely (ie ``docker stop <container_name> + docker rm <container_name>``)
+This state installs the Docker solution (see https://docs.docker.io)
+for Raspberry Pi support please see `Notes <https://github.com/saltstack-formulas/docker-formula/blob/master/docs/README.rst#notes-on-raspberry-pi-support>`_
 
 ``docker.clean``
 ^^^^^^^^^^^^^^^^
 
-Stop Docker daemon and remove older docker packages (usually called 'docker' and 'docker-engine'). Linux only.
+*Meta-state (This is a state that includes other states)*.
 
-``docker.repo``
-^^^^^^^^^^^^^^^
+Stop Docker daemon and remove docker packages ('docker', 'docker-engine', 'docker-ce', etc) on Linux. To protect OS integrity, this state won't remove packages listed as dependencies (i.e. python is kept).
 
-Configures the upstream docker's repo (true, by default).
 
-``docker.macosapp``
+``docker.software.package.repo``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Configures the upstream Docker's repo on RedHat/Debian OS.
+
+``docker.software.package.repo.clean``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This state removes upstream Docker package repository only, on RedHat/Debian OS.
+
+``docker.software``
 ^^^^^^^^^^^^^^^^^^^
 
-Installs Docker Desktop for Mac.
+This state installs Docker (see https://docs.docker.com/engine/install and https://docs.docker.com/desktop/)
 
-``docker.macosapp``
-^^^^^^^^^^^^^^^^^^^
+``docker.software.service``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Installs Docker Desktop for Mac.
+This state installs Dockerd daemon on Linux (systemd support).
+
+``docker.software.service.clean``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This state stops Dockerd daemon on Linux (systemd support).
+
+``docker.software.config``
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This state overrides default Docker options (i.e. /etc/default/docker)::
+
+  docker:
+    pkg:
+      docker:
+        config:
+          - DOCKER_OPTS="-s btrfs --dns 8.8.8.8"
+          - export http_proxy="http://172.17.42.1:3128"
+
+
+``docker.software.config.clean``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This state uninstalls Docker overrides (i.e. /etc/default/docker).
+
+``docker.software.clean``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This state uninstalls Docker software.
+
+``docker.containers``
+^^^^^^^^^^^^^^^^^^^^^
+
+Pulls and runs a number of docker containers. See docker container API for docker.containers options::
+
+  docker:
+    containers:
+      running:
+        - prometheus_simple
+        - prometheus_detail
+
+      prometheus_simple:
+        image: "prom/prometheus:v1.7.1"
+
+      prometheus_detail:
+        image: "prom/prometheus:v1.7.1"
+        # see https://docker-py.readthedocs.io/en/stable/containers.html
+
 
 ``docker.compose``
 ^^^^^^^^^^^^^^^^^^
 
-Installs `Docker Compose <https://docs.docker.com/compose/>`_
-(previously ``fig``) to define groups of containers and their relationships
-with one another. Use `docker.compose-ng` to run `docker-compose`.
+Saltstack `dockercompose module` state support (See https://docs.saltstack.com/en/2018.3/ref/modules/all/salt.modules.dockercompose.html).
 
-``docker.compose-ng``
+``docker.compose.ng``
 ^^^^^^^^^^^^^^^^^^^^^
 
 The intent is to provide an interface similar to the `specification <https://docs.docker.com/compose/compose-file/>`_
@@ -143,44 +157,61 @@ whenever it is reasonable for the sake of simplicity.
 It is worth noting that we have added one attribute which is decidedly absent
 from the docker-compose specification. That attribute is ``dvc``. This is a
 boolean attribute which allows us to define data only volume containers
-which can not be represented with the ``docker.running`` state interface
+which can not be represented with the ``docker.software.service.running`` state
 since they are not intended to include a long living service inside the
 container.
 
 See the included ``pillar.example`` for a representative pillar data block.
-
 To use this formula, you might target a host with the following pillar:
 
 .. code:: yaml
 
     docker:
       compose:
-        registry-data:
-          dvc: True
-          image: &registry_image 'library/registry:0.9.1'
-          container_name: &dvc 'registry-999-99-data'
-          command: echo *dvc data volume container
-          volumes:
-            - &datapath '/registry'
-        registry-service:
-          image: *registry_image
-          container_name: 'registry-999-99-service'
-          restart: 'always'
-          volumes_from:
-            - *dvc
-          environment:
-            SETTINGS_FLAVOR: 'local'
-            STORAGE_PATH: *datapath
-            SEARCH_BACKEND: 'sqlalchemy'
-        nginx:
-          image: 'library/nginx:1.9.0'
-          container_name: 'nginx-999-99'
-          restart: 'always'
-          links:
-            - 'registry-999-99-service:registry'
-          ports:
-            - '80:80'
-            - '443:443'
+        ng:
+          registry-datastore:
+            dvc: true
+            # image: &registry_image 'docker.io/registry:latest' ## Fedora
+            image: &registry_image 'registry:latest'
+            container_name: &dvc 'registry-datastore'
+            command: echo *dvc data volume container
+            volumes:
+              - &datapath '/registry'
+          registry-service:
+            image: *registry_image
+            container_name: 'registry-service'
+            volumes_from:
+              - *dvc
+            environment:
+              SETTINGS_FLAVOR: 'local'
+              STORAGE_PATH: *datapath
+              SEARCH_BACKEND: 'sqlalchemy'
+              REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: '/registry'
+            ports:
+              - 127.0.0.1:5000:5000
+            # restart: 'always'    # compose v1.9
+            deploy:                # compose v3
+              restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+                window: 120s
+          nginx-latest:
+            # image: 'docker.io/nginx:latest'  ##Fedora
+            image: 'nginx:latest'
+            container_name: 'nginx-latest'
+            links:
+              - 'registry-service:registry'
+            ports:
+              - '80:80'
+              - '443:443'
+            volumes:
+              - /srv/docker-registry/nginx/:/etc/nginx/conf.d
+              - /srv/docker-registry/auth/:/etc/nginx/conf.d/auth
+              - /srv/docker-registry/certs/:/etc/nginx/conf.d/certs
+            working_dir: '/var/www/html'
+            volume_driver: 'local'
+            userns_mode: 'host'
 
 Then you would target a host with the following states:
 
@@ -188,57 +219,81 @@ Then you would target a host with the following states:
 
     include:
       - base: docker
-      - base: docker.compose-ng
+      - base: docker.compose.ng
+
+``docker.swarm``
+^^^^^^^^^^^^^^^^
+
+Saltstack `swarm module` state support (See https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.swarm.html).
+
+``docker.swarm.clean``
+^^^^^^^^^^^^^^^^^^^^^^
+
+Opposite of `docker.swarm` state (See https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.swarm.html).
+
+``docker.networks``
+^^^^^^^^^^^^^^^^^^^
+
+Create docker networks
+
+``docker.networks.clean``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Remove docker networks
 
 
-``docker.registry (DEPRECATED)``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sub-states
+----------
 
-NEW:
+Sub-states are available inside sub-directories.
 
-Since the more generic *docker-container* above has been implemented, the *docker-registry* state can now be deprecated. The registry is just another docker image, we can use *docker-container* with a pillar similar to this:
 
-::
+Notes on Raspberry Pi support
+-----------------------------
 
-  docker-containers:
-    lookup:
-      registry:
-        image: "registry:2"
-        cmd:
-        runoptions:
-          - "-e REGISTRY_STORAGE=s3"
-          - "-e REGISTRY_STORAGE_S3_REGION=us-west-1"
-          - "-e REGISTRY_STORAGE_S3_BUCKET=my-bucket"
-          - "-e REGISTRY_STORAGE_S3_ROOTDIRECTORY=my_registry/folder"
-          - "--log-driver=syslog"
-          - "-p 5000:5000"
-          - "--rm"
+There are some caveats with regard to the support of this module on Rasberry Pi 4b's.
 
------
+* This module has only been tested with Raspberry Pi 4b using Rasbian Os Version Buster
 
-OLD:
+* This module supports raspbian only when used from Salt 3002.6. Salt 3003.x fails with template isses.
 
-IMPORTANT: docker.registry will eventually be removed.
+* Docker service is known to fail starting when freshly installed via this module on Rasbian Buster with all apt-get updates and upgrades performed. The error found in logs for failing to start is :code:`dockerd: failed to create NAT chain DOCKER`
+  
+The Reason for this is as documented `here <https://forums.docker.com/t/failing-to-start-dockerd-failed-to-create-nat-chain-docker/78269>`_ . The following Fix followed by a restart fixes this.
+The summary reason is that the docker installer uses iptables for nat. Unfortunately Debian uses nftables. You can convert the entries over to nftables or just setup Debian to use the legacy iptables.
+On the target Raspberry Pi issue the following to resolve or incorporate the SLS before in your custom SLS
 
-Run a Docker container to start the registry service.
+.. code-block:: bash
 
-If *"registry:lookup:version"* pillar is either the string "latest" or not specified at all, it defaults to the "latest" image tag, which at the time of this writing is still pointing to 0.9.1, even though 2.x is out for a while. It still uses the old registry pillar configuration for backwards compatibility. See the commented out block in *pillar.example*
+    sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+    sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+    sudo shutdown -r 0  # Do a restart, Docker.d should then function
 
-If *"registry:lookup:version"* is set to any other version, e.g. *2*, an image with that tag will be downloaded and the new pillar configuation should be used. See *pillar.example*.
+or the following SLS
 
-In this case, extra *docker run* options can be provided in your *"registry:lookup:runoptions"* pillar to provide environment variables, volumes, or log configuration to the container.
+.. code-block:: yaml
 
-By default, the storage backend used by the registry is "filesystem". Use environment variables to override that, for example to use S3 as backend storage.
+    iptables:
+      alternatives.set:
+        - path:  /usr/sbin/iptables-legacy
+    ip6tables:
+      alternatives.set:
+        - path:  /usr/sbin/ip6tables-legacy
 
-``docker.remove``
-^^^^^^^^^^^^^^^^^
+The provisioning of docker to raspbian uses functionality from https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script. It specifically mentions
+Using these scripts is not recommended for production environments, and you should understand the potential risks before you use them:
+The reasons are stated as :
 
-Stop Docker daemon. Remove older docker packages (usually called 'docker' and 'docker-engine').
+* The scripts require root or sudo privileges to run. Therefore, you should carefully examine and audit the scripts before running them.
 
-Development
------------
+* The scripts attempt to detect your Linux distribution and version and configure your package management system for you. In addition, the scripts do not allow you to customize any installation parameters. This may lead to an unsupported configuration, either from Docker’s point of view or from your own organization’s guidelines and standards.
 
-Note that some of the internal states such as `docker.running` are references to the internal `dockerio states <https://docs.saltstack.com/en/latest/ref/states/all/salt.states.dockerio.html>`_
+* The scripts install all dependencies and recommendations of the package manager without asking for confirmation. This may install a large number of packages, depending on the current configuration of your host machine.
+
+* The script does not provide options to specify which version of Docker to install, and installs the latest version that is released in the “edge” channel.
+
+* Do not use the convenience script if Docker has already been installed on the host machine using another mechanism.
+
 
 
 Testing
@@ -264,7 +319,7 @@ e.g. ``debian-9-2019-2-py3``.
 ``bin/kitchen converge``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Creates the docker instance and runs the ``template`` main state, ready for testing.
+Creates the Docker instance and runs the ``docker`` main state, ready for testing.
 
 ``bin/kitchen verify``
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -274,7 +329,7 @@ Runs the ``inspec`` tests on the actual instance.
 ``bin/kitchen destroy``
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Removes the docker instance.
+Removes the Docker instance.
 
 ``bin/kitchen test``
 ^^^^^^^^^^^^^^^^^^^^
