@@ -2,6 +2,93 @@
 Changelog
 =========
 
+`2.4.3 <https://github.com/saltstack-formulas/docker-formula/compare/v2.4.2...v2.4.3>`_ (2024-02-09)
+--------------------------------------------------------------------------------------------------------
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* update ``pre-commit`` configuration inc. for pre-commit.ci [skip ci] (\ `244195f <https://github.com/saltstack-formulas/docker-formula/commit/244195f92f56ac464a6793a1f832e90b2c5735de>`_\ )
+* **kitchen+gitlab:** update for new pre-salted images [skip ci] (\ `e618ee2 <https://github.com/saltstack-formulas/docker-formula/commit/e618ee24487eec6653046fac6d4eaabf82a0900d>`_\ )
+
+Styles
+^^^^^^
+
+
+* format and update pre-commit (\ `66ec109 <https://github.com/saltstack-formulas/docker-formula/commit/66ec109ea914a4788b38933273040762359607ba>`_\ )
+
+Tests
+^^^^^
+
+
+* **system.rb:** add support for ``mac_os_x`` [skip ci] (\ `fa98767 <https://github.com/saltstack-formulas/docker-formula/commit/fa987678161fa47988e376fb679bdc2bae9a8fa5>`_\ )
+
+`2.4.2 <https://github.com/saltstack-formulas/docker-formula/compare/v2.4.1...v2.4.2>`_ (2022-03-02)
+--------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **debian:** avoid adding repositories entries multiple times (\ `31ab3af <https://github.com/saltstack-formulas/docker-formula/commit/31ab3afafca23b6cdfcef28b72f309117fdf2e76>`_\ ), closes `/github.com/saltstack/salt/issues/59785#issuecomment-826590482 <https://github.com//github.com/saltstack/salt/issues/59785/issues/issuecomment-826590482>`_
+
+`2.4.1 <https://github.com/saltstack-formulas/docker-formula/compare/v2.4.0...v2.4.1>`_ (2022-03-02)
+--------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **osfamilymap:** use correct OS arch for deb pkg (\ `62eae20 <https://github.com/saltstack-formulas/docker-formula/commit/62eae20c9b0e4c6cc393cf9b7d5d25e92701657b>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* update linters to latest versions [skip ci] (\ `6fc940b <https://github.com/saltstack-formulas/docker-formula/commit/6fc940bb5b0f4e3f6aa4ff3c50f50bd81a777255>`_\ )
+
+Tests
+^^^^^
+
+
+* **repository:** fix ``rubocop`` violation [skip ci] (\ `bf38410 <https://github.com/saltstack-formulas/docker-formula/commit/bf38410cfc5d5aa667fcb6fb56c930473f8372bd>`_\ )
+* **repository:** use ``system.platform[:codename]`` [skip ci] (\ `a13ec28 <https://github.com/saltstack-formulas/docker-formula/commit/a13ec287b87dd8e0bb0ef4dd74ea4cd613619331>`_\ )
+* **system:** add ``build_platform_codename`` [skip ci] (\ `80c4591 <https://github.com/saltstack-formulas/docker-formula/commit/80c4591a969b57adb0cf190958b9e9b92b2a043e>`_\ )
+
+`2.4.0 <https://github.com/saltstack-formulas/docker-formula/compare/v2.3.1...v2.4.0>`_ (2022-02-10)
+--------------------------------------------------------------------------------------------------------
+
+Bug Fixes
+^^^^^^^^^
+
+
+* **centos:** modify repository url (\ `55ff30a <https://github.com/saltstack-formulas/docker-formula/commit/55ff30afb13abdb578dd37435f5c37b9670de748>`_\ )
+* **debian:** remove repository using ``file`` instead of ``pkgrepo`` (\ `28ea2f9 <https://github.com/saltstack-formulas/docker-formula/commit/28ea2f92e05f95123467ec0f29e3a79ff944c731>`_\ )
+* **dependencies:** add needed packages for Redhat's family members (\ `652da44 <https://github.com/saltstack-formulas/docker-formula/commit/652da448311d2935e3695e8ca5a0084c10fae38d>`_\ )
+* **repository:** amazonlinux repository url (\ `949551b <https://github.com/saltstack-formulas/docker-formula/commit/949551b46306297f7be2064ebd87c65b5df5c155>`_\ )
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **gemfile:** allow rubygems proxy to be provided as an env var [skip ci] (\ `a1a5880 <https://github.com/saltstack-formulas/docker-formula/commit/a1a58804f560eb5a82c7b2c626f9b8d3f6b3d1a2>`_\ )
+* **kitchen+ci:** update with ``3004`` pre-salted images/boxes [skip ci] (\ `caf640a <https://github.com/saltstack-formulas/docker-formula/commit/caf640ac724ef30f2b1b2d161bc3584db404e542>`_\ )
+* **kitchen+ci:** update with latest CVE pre-salted images [skip ci] (\ `141ae5e <https://github.com/saltstack-formulas/docker-formula/commit/141ae5e15dfe2acea1fd727593610fb39c1ddc60>`_\ )
+* **kitchen+gitlab:** update for new pre-salted images [skip ci] (\ `e19468b <https://github.com/saltstack-formulas/docker-formula/commit/e19468bc16e81431da398a84e91d635554defdb8>`_\ )
+
+Features
+^^^^^^^^
+
+
+* **debian:** use repository keyring instead of key_id (\ `db49eba <https://github.com/saltstack-formulas/docker-formula/commit/db49ebaaacc09da13fbbde3fe1303957d157170f>`_\ )
+
+Tests
+^^^^^
+
+
+* **repository:** redhat's family alternatives for repo url (\ `410078c <https://github.com/saltstack-formulas/docker-formula/commit/410078c5f47da3dd52a45705175e719448cfb0a2>`_\ )
+
 `2.3.1 <https://github.com/saltstack-formulas/docker-formula/compare/v2.3.0...v2.3.1>`_ (2021-09-09)
 --------------------------------------------------------------------------------------------------------
 
