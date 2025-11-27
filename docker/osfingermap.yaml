@@ -10,6 +10,20 @@
 # you will need to provide at least an empty dict in this file, e.g.
 # osfingermap: {}
 ---
+Debian-13:
+  pkg:
+    deps:
+      - python3-apt
+      - python3-pip
+      - python3-docker
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - iptables
+      - git
+      - procps
+
 Amazon Linux-2:
   pkg:
     docker:
