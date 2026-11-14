@@ -24,6 +24,19 @@ docker-software-package-repo-managed:
     - name: {{ d.pkg.docker.repo.file }}
     - contents: {{ d.pkg.docker.repo.name }}
 
+# Docker's key, formerly added via apt-key to the legacy /etc/apt/trusted.gpg,
+# is trusted there for every repository. The list above references the
+# keyring instead, so remove it.
+docker-software-package-repo-legacy-apt-key-absent:
+  cmd.run:
+    - name: apt-key --keyring /etc/apt/trusted.gpg del 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    - onlyif:
+      - test -f /etc/apt/trusted.gpg
+      - gpg --no-default-keyring --keyring /etc/apt/trusted.gpg --list-keys 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    - require:
+      - file: docker-software-package-repo-managed
+      - file: docker-software-package-repo-keyring-managed
+
   {%- else %}
 
 docker-software-package-repo-managed:
